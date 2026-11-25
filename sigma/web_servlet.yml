@@ -1,0 +1,26 @@
+title: Oracle EBS SyncServlet or UiServlet POST From External Source (CVE-2025-61882)
+id: 6a1f2c10-5150-4e01-9b61-000000000004
+status: experimental
+description: |
+  Web-log counterpart of Suricata sids 1000001/1000003: POSTs to the two servlets
+  used as entry points in Chain A (UiServlet) and Chain B (SyncServlet).
+  Pre-disclosure class: E (EBS-specific).
+author: Jaden Harris (CAP 5150)
+date: 2026-10-08
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'POST'
+    cs-uri-stem|endswith:
+      - '/OA_HTML/SyncServlet'
+      - '/OA_HTML/configurator/UiServlet'
+  filter_internal:
+    c-ip|startswith: '10.'
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate Configurator integrations from external partners
+level: medium

@@ -1,0 +1,33 @@
+title: Oracle EBS Java Process Spawning Interactive Shell (CVE-2025-61882)
+id: 6a1f2c10-5150-4e01-9b61-000000000001
+status: experimental
+description: |
+  Detects the EBS application tier (Java/WebLogic running as applmgr or oracle)
+  spawning an interactive shell, as in the reverse-shell stage of the
+  CVE-2025-61882 chain. Pre-disclosure class: G (generic).
+references:
+  - https://www.oracle.com/security-alerts/alert-cve-2025-61882.html
+  - https://cloud.google.com/blog/topics/threat-intelligence/oracle-ebusiness-suite-zero-day-exploitation
+author: Jaden Harris (CAP 5150)
+date: 2026-10-08
+tags:
+  - attack.execution
+  - attack.t1059.004
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection_parent:
+    ParentImage|endswith: '/java'
+  selection_child:
+    Image|endswith:
+      - '/bash'
+      - '/sh'
+  selection_interactive:
+    CommandLine|contains:
+      - 'bash -i'
+      - '/dev/tcp/'
+  condition: selection_parent and selection_child and selection_interactive
+falsepositives:
+  - Admin scripts launched from Java-based tooling (verify against baseline)
+level: critical
