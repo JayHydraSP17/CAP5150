@@ -1,0 +1,25 @@
+title: Oracle EBS TemplatePreviewPG With TMP/DEF Template Code (CVE-2025-61882)
+id: 6a1f2c10-5150-4e01-9b61-000000000003
+status: experimental
+description: |
+  Web/access-log counterpart of Suricata sid 1000004. Malicious XSL payloads were
+  stored as templates with codes prefixed TMP or DEF and triggered via TemplatePreviewPG.
+  Pre-disclosure class: E (EBS-specific).
+author: Jaden Harris (CAP 5150)
+date: 2026-10-08
+tags:
+  - attack.execution
+  - attack.t1059
+logsource:
+  category: webserver
+detection:
+  selection_page:
+    cs-uri-query|contains: 'TemplatePreviewPG'
+  selection_code:
+    cs-uri-query|contains:
+      - 'TemplateCode=TMP'
+      - 'TemplateCode=DEF'
+  condition: selection_page and selection_code
+falsepositives:
+  - Legitimate templates whose codes begin with TMP/DEF (inventory XDO_TEMPLATES_B first)
+level: high
